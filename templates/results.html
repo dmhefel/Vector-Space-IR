@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            background-color: plum;
+        }
+    </style>
+    <title>Washington Post Search Results</title>
+</head>
+<body>
+
+<h3>Washington Post Search</h3>
+
+<form action="{{ url_for('results') }}" name="search" method="post">
+    <label for="query">Query:</label>
+    <input type="text" id="query" name="query" size=50>
+    <input type="submit" value="Search">
+</form>
+
+<h3>Search Results</h3>
+<h4>Query terms and IDF: {{ idf }}</h4>
+{% if stop %}
+<h4>Ignoring term(s): {{ stop }}</h4>
+{% endif %}
+{% if unknown %}
+<h4>Unknown term(s): {{ unknown }}</h4>
+{% endif %}
+<ul>
+
+<ol start = {{ start }}>
+
+   {% for item in result %}
+
+        <dt><li>[{{item['cossim']}}]  <a href="{{ url_for('doc_data', doc_id=item['id']) }}">{{ item['title'] }}</li></a>
+            </dt>
+       <dd>{{ item['content_str'][:150]|e}}</dd>
+       <dd> Included terms: {{ item['terms'] }}</dd>
+{% endfor %}
+</ol>
+
+</ul>
+</form>
+</body>
+
+{% if hasnext %}
+<a href="{{ url_for('next_page', page_id= next_page, query_text=query)}} "><input type="submit" name="Next" value="Next"/>
+    <span class="a-letter-space"></span>
+    <span class="a-letter-space"></span>
+</a>
+{% endif %}
+</html>
+
